@@ -1,0 +1,193 @@
+---
+title: "HW1"
+author: "DEEPTI"
+date: "September 12, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#1 :
+Credi card companies across the globe face lot of problem of issuing credit card to customers who don't pay payments on time, leading to extensive monetary loss to the organization. In this paper, sample data of credit card company based out of Taiwan was analysed and 6 different approaches are used to predict if customer would be qualified to get credit card or not.
+The approaches used by the authors were : K-nearest neighbor qualifiers, logistic regression, discriminant analysis, Naïve Bayesian qualifier, artificial neural networks and classification trees. The variables used for analysis were amount of given credit, gender, education, marital status, age, past payment history, bill statement and previous payment.
+#2:
+In the business problem to identify whether or not credit card is given to qualified customer or not authors first analysed on what factors determine whether the customer is default customer or not.  After that they evaluated different statistical approaches to used for determining which is the right approach. In this case authors used 6 different techniques to figure out the right approach.
+
+
+#3
+#Data Dictionary
+'''(r kable)
+library(knitr)
+ID="ID: observation ID"
+Y="Y: default payment(Yes=1,No=0), as the reponse variable"
+X1_LIMIT_BAL="X1_LIMIT_BAL:Amount of the given credit (NT Dollar):It includes both the individual consumer credit and his/her family (supplementary) credit"
+X2_SEX="X2_SEX:(1=male; 2=female)"
+X3_EDUCATION="X3_EDUCATION:(1=graduate school; 2=university; 3=high school; 4=others)"
+X4_MARRIAGE="X4_MARRIAGE:(1=married; 2=single, 3=others)"
+X5_AGE="X5_AGE:Age(years)"
+X6_PAY_0="X6_PAY_0:the repayment status in September, 2005 where 0=nodelay; -1=pay duly; 1=payment delay for one month; etc"
+X7_PAY_2="X7_PAY_2:the repayment status in August,2005 where 0=nodelay;-1=pay duly; 1=payment delay for one month; etc"
+X8_PAY_3="X8_PAY_3:the repayment status in July, 2005 where 0=nodelay;-1=pay duly; 1=payment delay for one month; etc"
+X9_PAY_4="X9_PAY_4:the repayment status in June,2005 where 0=nodelay;-1=pay duly; 1=payment delay for one month; etc"
+X10_PAY_5="X10_PAY_5:the repayment status in May,2005 where 0=nodelay;-1=pay duly; 1=payment delay for one month; etc"
+X11_PAY_6="X11_PAY_6:the repayment status in April,2005 where 0=nodelay;-1=pay duly; 1=payment delay for one month; etc"
+X_12_BILL_AMT1="X_12_BILL_AMT1:amount of bill statement (NT dollar) in September 2005"
+X_13_BILL_AMT1="X_13_BILL_AMT2:amount of bill statement (NT dollar) in August 2005"
+X_14_BILL_AMT1="X_14_BILL_AMT1:amount of bill statement (NT dollar) in July 2005"
+X_15_BILL_AMT1="X_15_BILL_AMT1:amount of bill statement (NT dollar) in June 2005"
+X_16_BILL_AMT1="X_16_BILL_AMT1:amount of bill statement (NT dollar) in May 2005"
+X_17_BILL_AMT1="X_17_BILL_AMT1:amount of bill statement (NT dollar) in April 2005"
+X_18_PAY_AMT1="X_18_PAY_AMT1:Amount of previous paid balance (NT dollar) in September 2005"
+X_19_PAY_AMT1="X_19_PAY_AMT1:Amount of previous paid balance (NT dollar) in August 2005"
+X_20_PAY_AMT1="X_20_PAY_AMT1:Amount of previous paid balance (NT dollar) in July 2005"
+X_21_PAY_AMT1="X_21_PAY_AMT1:Amount of previous paid balance (NT dollar) in June 2005"
+X_22_PAY_AMT1="X_22_PAY_AMT1:Amount of previous paid balance (NT dollar) in May 2005"
+X_23_PAY_AMT1="X_23_PAY_AMT1:Amount of previous paid balance (NT dollar) in April 2005"
+kable(c(ID,Y,X1_LIMIT_BAL,X2_SEX, X3_EDUCATION,X4_MARRIAGE,X5_AGE,X6_PAY_0,X7_PAY_2,X8_PAY_3,X9_PAY_4,X10_PAY_5,X11_PAY_6,X_12_BILL_AMT1,X_13_BILL_AMT1,X_14_BILL_AMT1,X_15_BILL_AMT1,X_16_BILL_AMT1,X_17_BILL_AMT1,X_18_PAY_AMT1,X_19_PAY_AMT1,X_20_PAY_AMT1,X_21_PAY_AMT1,X_22_PAY_AMT1,X_23_PAY_AMT1), caption ="Data set description", padding=5)
+'''
+#Read data from url
+require(XML)
+myURL <- "https://raw.githubusercontent.com/MatthewALanham/HW2_lanhamm/master/creditCardDefaultData.csv"
+myData <- read.table(file= myURL, header=T, sep=",", colClasses=c("factor","factor","factor","numeric","character","numeric","numeric","factor" ))
+rm(myURL)
+#read first five rows of data
+head(myData,n=5)
+#4
+#creating unordered factors
+myfactors=as.factors(c(myData$Y,myData$X2_SEX,myData$X4_Marriage))
+#checking if factor
+is.factor(myData$Y)
+is.factor(myData$X2_SEX)
+is.factor(myData$X4_MARRIAGE)
+#5
+#Changing valuesof variables not in 1,2,3,4 to 4
+myData$X3_EDUCATION[myData$X3_EDUCATION != c(1,2,3,4)] <- 4
+#Checking Ordered Variables
+factor(x=myData$X3_EDUCATION, levels=c(1,2,3,4), ordered = TRUE)
+#6
+#dataquality.R
+source("DataQualityReport.R")
+source("DataQualityReportOverall.R")
+DataQualityReport(myData)
+DataQualityReportOverall(myData)
+data(myData)
+num.file <- paste(tempdir(), "/dq_num.csv", sep= "")
+cat.file <- paste(tempdir(), "/dq_cat.csv", sep= "")
+checkDataQuality(data= myData, out.file.num= num.file, out.file.cat= cat.file)
+
+#7
+dataset=data.frame(myData$X12_BILL_AMT1,myData$X5_AGE)
+
+customer_age <- dataset[dataset$myData.X12_BILL_AMT1 == 964511, ]
+customer_age
+customer_age <- subset(myData, X12_BILL_AMT1==964511)
+#8
+subset=data.frame(myData$ID,myData$X3_EDUCATION,myData$X2_SEX)
+subset
+graduate=subset[subset$myData.X3_EDUCATION==1 ,  ]
+graduate
+nrow(graduate)
+malegraduate=graduate[graduate$myData.X2_SEX==1, ]
+malegraduate
+nrow(malegraduate)
+print(paste0("No. Of Graduates=",nrow(malegraduate)))
+
+#9
+q=data.frame(myData$Y,myData$X5_AGE)
+q
+avg=mean(myData$X5_AGE)
+avg
+g=q[q$myData.X5_AGE<avg, ]
+print(paste0("proportion of people that are below average in age amongst those that have defaulted=",nrow(g)/nrow(q)))
+#10
+options(scipen=999)
+library(ggplot2)
+boxplot(db$X1_LIMIT_BAL~db$Y, main="Card Limit By Default",ylab="Credit Card Limit",col=c("blue","green"),bg="lightgrey",xlab="Default(Yes=1,No=0)")
+legend(x=2.2,y=1000000,legend=c("0","1"),fill=c("blue","green"))
+#10
+qplot(db, y, data=myData, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, xlim=, ylim= xlab=, ylab=, main=, sub=)
+
+l=data.frame(myData$X1_LIMIT_BAL,db$Y)
+l
+z1=l[l$myData.Y==1, ]
+z1
+ggplot(data=z1) + geom_density(aes(x = l), fill="blue")
+#11
+#creating a new field for credit balance in NT
+myData$creditcardbalance=myData$X12_BILL_AMT1+myData$X13_BILL_AMT1+myData$X14_BILL_AMT1+myData$X15_BILL_AMT1+myData$X16_BILL_AMT1+myData$X17_BILL_AMT1-myData$X18_PAY_AMT1-myData$X19_PAY_AMT-myData$X20_PAY_AMT-myData$X21_PAY_AMT-myData$X22_PAY_AMT-myData$X23_PAY_AMT
+#Creating a new field for credit balance in USD
+myData$creditbalanceusd=myData$creditcardbalance*0.0032
+#Creating distribution graphs
+library(ggplot2)
+
+
+# First plot
+p1<- ggplot(myData, aes(x=creditcardbalance)) + geom_density(aes(group=Y, colour=ind, fill=ind), alpha=0.3)+
+    ggtitle("Distribution of credit card balance in NT Dollars")
+
+# Second plot
+p2 <- ggplot(myData, aes(x=creditcardbalanceusd)) + geom_density(aes(group=Y, colour=ind, fill=ind), alpha=0.3)+
+    ggtitle("Distribution of credit card balance in US Dollars")
+
+#Using multiplot function
+multiplot(p1,p2,col=2)
+#Extra Credit
+```{r datatypedate, echo=T}
+par(mfrow=c(1,2))
+#library(dob)
+bill_sept = aggregate(myData$X12_BILL_AMT1 ~ myData$Y , myData, median)
+bill_aug = aggregate(myData$X13_BILL_AMT2 ~ myData$Y , myData, median)
+bill_july = aggregate(myData$X14_BILL_AMT3 ~ myData$Y , myData, median)
+bill_June = aggregate(myData$X15_BILL_AMT4 ~ myData$Y , myData, median)
+bill_may = aggregate(myData$X16_BILL_AMT5 ~ myData$Y , myData, median)
+bill_april = aggregate(myData$X17_BILL_AMT6 ~ myData$Y , myData, median)
+paid_sept = aggregate(myData$X18_PAY_AMT1 ~ myData$Y , myData, median)
+paid_aug = aggregate(myData$X19_PAY_AMT2 ~ myData$Y , myData, median)
+paid_july = aggregate(myData$X20_PAY_AMT3 ~ myData$Y , myData, median)
+paid_june = aggregate(myData$X21_PAY_AMT4 ~ myData$Y , myData, median)
+paid_may = aggregate(myData$X22_PAY_AMT5 ~ myData$Y , myData, median)
+paid_april = aggregate(myData$X23_PAY_AMT6 ~ myData$Y , myData, median)
+myData$months = c("April", "May", "June", "July", "August", "September")
+#Merging the two dataset of bill
+merge1 = merge(x=bill_april, y=bill_may, by= "Y",all=TRUE)
+merge2 = merge(x=bill_june, y=bill_july, by= "Y",all=TRUE)
+merge3 = merge(x=bill_aug, y=bill_sept, by= "Y",all=TRUE)
+merge4 = merge(x=merge1, y=merge2, by= "Y", all=TRUE)
+merge5 = merge(x=merge4, y=merge3, by= "Y", all=TRUE)
+#merging the data sets of paid
+merge6 = merge(x=paid_april, y=paid_may, by= "Y",all=TRUE)
+merge7 = merge(x=paid_june, y=paid_july, by= "Y",all=TRUE)
+merge8 = merge(x=paid_aug, y=paid_sept, by= "Y",all=TRUE)
+merge9 = merge(x=merge6, y=merge7, by= "Y", all=TRUE)
+merge10 = merge(x=merge8, y=merge9, by= "Y", all=TRUE)
+#Reshaping the dataframes
+library(reshape)
+mdata <- melt(merge5, id="Y")
+mdata1=melt(merge10,id="Y")
+#First Line plot
+p1=
+#Second line plot
+  p2
+#Multiplot
+multiplot(p1,p2,col=2)
